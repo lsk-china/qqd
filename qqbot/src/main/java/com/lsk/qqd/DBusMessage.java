@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class DBusMessage {
     private Integer code;
     private String message;
-    private String error;
+    private String json;
 }
