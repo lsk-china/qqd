@@ -9,8 +9,9 @@ public interface NativeBinding extends Library {
         void invoke(Pointer messageJson);
     }
 
-    void sendMessageToDBus(String messageJson);
+    int sendMessageToDBus(String messageJson);
     void setSignalCB(DBusSignalListener cb);
-    void dbusInit();
-    void dbusFinalize();
+    int dbusInit();
+    int dbusFinalize();
+    void dbusListen();
 }
