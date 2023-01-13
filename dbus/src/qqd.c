@@ -5,7 +5,27 @@
 #include "qqd.h"
 
 int sendMessageToBus(char *messageJson) {
-
+    DBusMessageIter args;
+    dbus_uint32_t serial = 0;
+    DBusMessage *msg = dbus_message_new_signal(SIGNAL_OBJECT_NAME_MESSAGE_RECEIVED,
+                                               SIGNAL_INTERFACE_NAME_MESSAGE_RECEIVED,
+                                               SIGNAL_NAME_MESSAGE_RECEIVED);
+    if (msg == NULL) {
+        fprintf(stderr, "Message Null\n");
+        return 1;
+    }
+    dbus_message_iter_init_append(msg, &args);
+    if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &messageJson)) {
+        fprintf(stderr, "Out Of Memory!\n");
+        return 2;
+    }
+    if (!dbus_connection_send(conn, msg, &serial)) {
+        fprintf(stderr, "Out Of Memory!\n");
+        return 3;
+    }
+    dbus_connection_flush(conn);
+    dbus_message_unref(msg);
+    return 0;
 }
 void setSignalCB(const DBusSignalListener cbIn) {
     cb = cbIn;
@@ -43,6 +63,7 @@ finalize:
     return ret;
 }
 int dbusFinalize() {
+    runDBusLoop = 0;
     dbus_connection_close(conn);
 }
 void dbusListen() {
